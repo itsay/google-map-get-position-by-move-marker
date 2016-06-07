@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<body onload="initialize()">
+
+<div id="map_canvas" style="width:500px; height:500px;border: 1px solid;"></div>
+
+<div id="latlong">
+    <p>Latitude: <input size="20" type="text" id="latbox" name="lat" ></p>
+    <p>Longitude: <input size="20" type="text" id="lngbox" name="lng" ></p>
+</div>
+
+</body>
+<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCX9EP0U7Gxd8C6jDksPeqaNnGwiC6pNc4"></script>
+<script type="text/javascript">
+    var map;
+    function initialize() {
+        getLocation();
+    }
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            document.getElementById("map_canvas").innerHTML = "Geolocation is not supported by this browser.";
+        }
+    }
+    function showPosition(position) {
+        var myLatlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
+        var myOptions = {
+            zoom: 17,
+            center: myLatlng,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+
+        var marker = new google.maps.Marker({
+            draggable: true,
+            position: myLatlng,
+            map: map,
+            title: "Your location"
+        });
+
+        google.maps.event.addListener(marker, 'dragend', function (event) {
+            document.getElementById("latbox").value = this.getPosition().lat();
+            document.getElementById("lngbox").value = this.getPosition().lng();
+        });
+    }
+</script>
+</html>
